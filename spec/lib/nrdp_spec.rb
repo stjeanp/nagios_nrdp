@@ -58,7 +58,7 @@ describe Nagios::Nrdp do
 EOXML
     stub_request(:post, "http://localhost/nrdp/").to_return(:body => body, :status => 200)
     nrdp = Nagios::Nrdp.new(:url => "http://localhost/nrdp", :token => "foobar")
-    nrdp.submit_check(:hostname => "foobar", :state => 0, :output => "UP")
+    expect(nrdp.submit_check(:hostname => "foobar", :state => 0, :output => "UP")).to eq(true)
     WebMock.reset!
   end
 
@@ -74,7 +74,7 @@ EOXML
 EOXML
     stub_request(:post, "http://localhost/nrdp/").to_return(:body => body, :status => 200)
     nrdp = Nagios::Nrdp.new(:url => "http://localhost/nrdp", :token => "foobar")
-    nrdp.submit_check(:hostname => "foobar", :servicename => "something", :state => 0, :output => "UP")
+    expect(nrdp.submit_check(:hostname => "foobar", :servicename => "something", :state => 0, :output => "UP")).to eq(true)
     WebMock.reset!
   end
 
@@ -134,7 +134,7 @@ EOXML
     nrdp = Nagios::Nrdp.new(:url => "http://localhost/nrdp", :token => "foobar")
     checks = [ { :hostname => "foobar", :state => 1, :output => "testing" },
                { :hostname => "foobarbaz", :state => 0, :output => "moar testing" } ]
-    nrdp.submit_check(checks)
+    expect(nrdp.submit_check(checks)).to eq(true)
     WebMock.reset!
   end
 
@@ -152,7 +152,7 @@ EOXML
     nrdp = Nagios::Nrdp.new(:url => "http://localhost/nrdp", :token => "foobar")
     checks = [ { :hostname => "foobar", :servicename => "the_service", :state => 1, :output => "testing" },
                { :hostname => "foobarbaz", :servicename => "another_service", :state => 0, :output => "moar testing" } ]
-    nrdp.submit_check(checks)
+    expect(nrdp.submit_check(checks)).to eq(true)
     WebMock.reset!
   end
 
@@ -170,7 +170,7 @@ EOXML
     nrdp = Nagios::Nrdp.new(:url => "http://localhost/nrdp", :token => "foobar")
     checks = [ { :hostname => "foobar", :servicename => "the_service", :state => 1, :output => "testing" },
                { :hostname => "foobarbaz", :state => 0, :output => "moar testing" } ]
-    nrdp.submit_check(checks)
+    expect(nrdp.submit_check(checks)).to eq(true)
     WebMock.reset!
   end
 
@@ -210,5 +210,31 @@ EOXML
   it "#submit_command should alert on missing command" do
     nrdp = Nagios::Nrdp.new(:url => "http://localhost/nrdp", :token => "foobar")
     expect { nrdp.submit_command }.to raise_error(ArgumentError)
+  end
+
+  it "#submit_command" do
+    body = <<-EOXML
+<result>
+  <status>0</status>
+  <message>OK</message>
+</result>
+EOXML
+    stub_request(:get, "http://localhost/nrdp/?cmd=submitcmd&command=DISABLE_HOST_NOTIFICATIONS%3Bfoobar&token=foobar").to_return(:body => body, :status => 200)
+    nrdp = Nagios::Nrdp.new(:url => "http://localhost/nrdp", :token => "foobar")
+    expect(nrdp.submit_command("DISABLE_HOST_NOTIFICATIONS;foobar")).to eq(true)
+    WebMock.reset!
+  end
+
+  it "#submit_command, failure" do
+    body = <<-EOXML
+<result>
+  <status>-1</status>
+  <message>NO COMMAND</message>
+</result>
+EOXML
+    stub_request(:get, "http://localhost/nrdp/?cmd=submitcmd&command=DISABLE_HOST_NOTIFICATIONS%3Bfoobar&token=foobar").to_return(:body => body, :status => 200)
+    nrdp = Nagios::Nrdp.new(:url => "http://localhost/nrdp", :token => "foobar")
+    expect { nrdp.submit_command("DISABLE_HOST_NOTIFICATIONS;foobar") }.to raise_error(RuntimeError)
+    WebMock.reset!
   end
 end
