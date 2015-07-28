@@ -1,3 +1,3 @@
 module Nagios
-  autoload :NrdpAlerter, "nagios/nrdp_alerter"
+  autoload :Nrdp, "nagios/nrdp"
 end
