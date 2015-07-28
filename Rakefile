@@ -9,7 +9,7 @@ task :default => :test
 RSpec::Core::RakeTask.new(:spec)
 
 RuboCop::RakeTask.new(:rubocop) do |task|
-  task.patterns = ['lib/**/*.rb']
+  task.patterns = ['lib/**/*.rb', 'examples/**/*.rb']
   task.formatters = ['files']
   task.fail_on_error = true
 end
