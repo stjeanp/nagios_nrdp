@@ -28,7 +28,7 @@ module Nagios
       end
     end
 
-    def send_check(*args)
+    def submit_check(*args)
       if args[0].is_a? Hash
         the_checks = [args[0]]
       else
@@ -76,10 +76,10 @@ module Nagios
       end
       true
     end
-    alias_method :send_checks, :send_check
+    alias_method :submit_checks, :submit_check
 
     def submit_command(the_command = "")
-      if !the_command || !the_command.is_a? String || the_command.empty?
+      if !the_command || !the_command.is_a?(String) || the_command.empty?
         raise ArgumentError, "Invalid command supplied!"
       end
 
