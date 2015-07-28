@@ -1,5 +1,4 @@
-require 'nagios_nrdp'
-require 'webmock/rspec'
+require 'spec_helper'
 
 describe Nagios::Nrdp do
   it "#initialize should raise an error without no args" do
