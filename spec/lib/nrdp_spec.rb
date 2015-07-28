@@ -1,4 +1,4 @@
-require 'nagios/nrdp'
+require 'nagios_nrdp'
 require 'webmock/rspec'
 
 describe Nagios::Nrdp do
