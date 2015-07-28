@@ -1,0 +1,8 @@
+language: ruby
+matrix:
+  include:
+    - rvm: 1.9.3
+      env: COVERAGE=true
+    - rvm: 2.0.0
+    - rvm: 2.1.6
+    - rvm: 2.2.2
