@@ -10,6 +10,7 @@ group :development, :test do
   gem 'webmock', '~> 1.21', :require => false
   gem 'jeweler', '~> 2.0', :require => false
   gem 'coveralls', '~> 0.8', :require => false
+  gem 'yard', '~> 0.8', :require => false
 end
 
 # vim:ft=ruby

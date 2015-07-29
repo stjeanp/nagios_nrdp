@@ -3,6 +3,7 @@ require 'rake'
 require 'rspec/core/rake_task'
 require 'bundler/gem_tasks'
 require 'rubocop/rake_task'
+require 'yard'
 
 task :default => :test
 
@@ -27,10 +28,19 @@ begin
     gem.files        = %w(README.md Rakefile) + Dir['lib/**/*'] + Dir['spec/**/*']
     gem.test_files   = Dir['spec/**/*']
     gem.licenses     = ['MIT']
+    gem.required_ruby_version = '>= 1.9.3'
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
   puts 'Jeweler (or a dependency) not available. Install it with: gem install jeweler'
+end
+
+# Include Yard tasks for rake yard
+YARDOC_LOCATION = "doc"
+YARD::Rake::YardocTask.new do |t|
+  t.files   = ['lib/**/*.rb', "README"]
+  t.options = ["--output-dir", YARDOC_LOCATION, "--title", "nagios_nrdp "]
+  #t.stats_options = ["--list-undoc"]
 end
 
 desc "Run syntax, lint, and rspec tests..."

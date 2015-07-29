@@ -2,13 +2,29 @@ require 'net/http'
 require 'uri'
 require 'nokogiri'
 
+# The parent, trying to keep the class tree clean
 module Nagios
   # Implements an interface to Nagios NRDP to facilitate submitting check
   # results and commands
+  #
+  # @see https://assets.nagios.com/downloads/nrdp/docs/NRDP_Overview.pdf
   class Nrdp
+    # @!attribute [rw] url
+    #   The URL of the NRDP endpoint
+    #   @return [String] the URL of the NRDP endpoint
     attr_accessor :url
+    # @!attribute [rw] token
+    #   The authentication token
+    #   @return [String] the authentication token
     attr_accessor :token
 
+    # Create a new instance of Nagios::Nrdp and set the URL and token
+    #
+    # @param [Hash] args parameters for this instance
+    # @option args [String] :url the URL of the NRDP endpoint
+    # @option args [String] :token the authentication token
+    #
+    # @raise [ArgumentError] when the args fail validation
     def initialize(args = {})
       @url = args[:url] || nil
       @token = args[:token] || nil
@@ -23,6 +39,17 @@ module Nagios
       fail ArgumentError, 'The token supplied is invalid!' unless @token && !@token.empty?
     end
 
+    # @overload submit_check(the_check)
+    #   Submit a single passive check result
+    #   @param [Hash] the_check the passive check result data
+    #   @option the_check [String] :hostname The hostname for this passive check
+    #   @option the_check [String] :servicename The optional service name for this passive check
+    #   @option the_check [Integer] :state The state of this passive check
+    #   @option the_check [String] :output The output of this passive check
+    #   @raise [RuntimeError] when the submission fails
+    # @overload submit_check(the_checks)
+    #   @param [Array<Hash>] the_checks an array of passive check results
+    #   @raise [RuntimeError] when the submission fails
     def submit_check(*args)
       if args[0].is_a? Hash
         the_checks = [args[0]]
@@ -66,6 +93,12 @@ module Nagios
     end
     alias_method :submit_checks, :submit_check
 
+    # Submit a Nagios command
+    #
+    # @param [String] the_command the command to be submitted
+    #
+    # @raise [ArgumentError] when the args fail validation
+    # @raise [RuntimeError] when the submission fails
     def submit_command(the_command = '')
       if !the_command || !the_command.is_a?(String) || the_command.empty?
         fail ArgumentError, 'Invalid command supplied!'
@@ -98,6 +131,17 @@ module Nagios
 
     private
 
+    # Validate the supplied check's data
+    #
+    # @api private
+    #
+    # @param [Hash] the_check the passive check result data
+    # @option the_check [String] :hostname The hostname for this passive check
+    # @option the_check [String] :servicename The optional service name for this passive check
+    # @option the_check [Integer] :state The state of this passive check
+    # @option the_check [String] :output The output of this passive check
+    #
+    # @raise [ArgumentError] when validation fails
     def validate_check(the_check = {})
       fail ArgumentError, 'Unknown parameters in check!' unless the_check.keys.all? { |key| [:hostname, :servicename, :state, :output].include? key }
       if [:hostname, :state, :output].any? { |key| !the_check.key?(key) }
@@ -106,6 +150,13 @@ module Nagios
       fail ArgumentError, "Check's state must be an integer!" unless the_check[:state].is_a? Integer
     end
 
+    # Create the XML document containing the passive check results
+    #
+    # @param [Array<Hash>] the_checks the array of passive check results
+    #
+    # @return [String] the XML document to be submitted
+    #
+    # @raise [ArgumentError] when the checks aren't valid
     def build_xml(the_checks = [])
       if the_checks.nil? || the_checks.count < 1
         fail ArgumentError, 'You must send at least one check!'
