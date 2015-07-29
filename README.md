@@ -44,6 +44,21 @@ nrdp = Nagios::Nrdp.new(url: url, token: token)
 nrdp.submit_check(hostname: hostname, servicename: servicename, state: state.to_i, output: output)
 ```
 
+* Send multiple passive checks:
+
+```ruby
+require 'nagios_nrdp'
+
+url = 'http://some.host/nrdp'
+token = 'your token'
+checks = [{ hostname: 'host1', state: 1, output: 'DOWN' },
+          { hostname: 'host2', state: 0, output: 'UP' }]
+
+nrdp = Nagios::Nrdp.new(url: url, token: token)
+nrdp.submit_checks(checks)
+```
+
+
 * Send a command:
 
 ```ruby
