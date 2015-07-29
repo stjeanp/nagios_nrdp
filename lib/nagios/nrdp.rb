@@ -107,7 +107,7 @@ module Nagios
     end
 
     def build_xml(the_checks = [])
-      if the_checks.count < 1
+      if the_checks.nil? || the_checks.count < 1
         fail ArgumentError, 'You must send at least one check!'
       end
 
