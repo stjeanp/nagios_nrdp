@@ -45,6 +45,21 @@ describe Nagios::Nrdp do
     expect { nrdp.submit_check(hostname: 'foobar', state: 0, output: 'UP', blarg: 'blop') }.to raise_error(ArgumentError)
   end
 
+  it '#submit_check should alert when called with no args' do
+    nrdp = Nagios::Nrdp.new(url: 'http://localhost/nrdp', token: 'foobar')
+    expect { nrdp.submit_check }.to raise_error(ArgumentError)
+  end
+
+  it '#submit_check should alert when called with an empty hash' do
+    nrdp = Nagios::Nrdp.new(url: 'http://localhost/nrdp', token: 'foobar')
+    expect { nrdp.submit_check({}) }.to raise_error(ArgumentError)
+  end
+
+  it '#submit_check should alert when called with an empty array' do
+    nrdp = Nagios::Nrdp.new(url: 'http://localhost/nrdp', token: 'foobar')
+    expect { nrdp.submit_check([]) }.to raise_error(ArgumentError)
+  end
+
   it '#submit_check, single, host, successful' do
     body = <<-EOXML
 <result>
