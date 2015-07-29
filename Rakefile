@@ -20,7 +20,7 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = 'nagios_nrdp'
     gem.summary = 'A ruby gem for submitting passive checks and commands to Nagios through NRDP.'
-    gem.description = 'A pure ruby implementation an NRDP client for submitting passive checks and commands to Nagios through NRDP.'
+    gem.description = 'A pure ruby implementation of an NRDP client for submitting passive checks and commands to Nagios through NRDP.'
     gem.email = 'stjeanp@pat-st-jean.com'
     gem.homepage = 'http://github.com/stjeanp/nrdp'
     gem.authors = ['stjeanp']
