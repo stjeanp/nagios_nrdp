@@ -29,9 +29,6 @@ module Nagios
       else
         the_checks = args[0]
       end
-      the_checks.each do |the_check|
-        validate_check(the_check)
-      end
 
       payload = build_xml(the_checks)
 
@@ -117,6 +114,7 @@ module Nagios
       the_xml = "<?xml version='1.0'?>\n"
       the_xml += "<checkresults>\n"
       the_checks.each do |check|
+        validate_check(check)
         the_xml += "  <checkresult type='"
         the_xml += check[:servicename] ? 'service' : 'host'
         the_xml += "'>\n"
