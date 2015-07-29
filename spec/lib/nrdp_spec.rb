@@ -61,6 +61,22 @@ EOXML
     WebMock.reset!
   end
 
+  it '#submit_check, single, ssl, host, successful' do
+    body = <<-EOXML
+<result>
+  <status>0</status>
+  <message>OK</message>
+    <meta>
+       <output>1 checks processed.</output>
+    </meta>
+</result>
+EOXML
+    stub_request(:post, 'https://localhost/nrdp/').to_return(body: body, status: 200)
+    nrdp = Nagios::Nrdp.new(url: 'https://localhost/nrdp', token: 'foobar')
+    expect(nrdp.submit_check(hostname: 'foobar', state: 0, output: 'UP')).to eq(true)
+    WebMock.reset!
+  end
+
   it '#submit_check, 404 error' do
     body = "404: NOT FOUND"
     stub_request(:post, 'http://localhost/nrdp/').to_return(body: body, status: 404)
@@ -228,6 +244,19 @@ EOXML
 EOXML
     stub_request(:get, 'http://localhost/nrdp/?cmd=submitcmd&command=DISABLE_HOST_NOTIFICATIONS%3Bfoobar&token=foobar').to_return(body: body, status: 200)
     nrdp = Nagios::Nrdp.new(url: 'http://localhost/nrdp', token: 'foobar')
+    expect(nrdp.submit_command('DISABLE_HOST_NOTIFICATIONS;foobar')).to eq(true)
+    WebMock.reset!
+  end
+
+  it '#submit_command, ssl' do
+    body = <<-EOXML
+<result>
+  <status>0</status>
+  <message>OK</message>
+</result>
+EOXML
+    stub_request(:get, 'https://localhost/nrdp/?cmd=submitcmd&command=DISABLE_HOST_NOTIFICATIONS%3Bfoobar&token=foobar').to_return(body: body, status: 200)
+    nrdp = Nagios::Nrdp.new(url: 'https://localhost/nrdp', token: 'foobar')
     expect(nrdp.submit_command('DISABLE_HOST_NOTIFICATIONS;foobar')).to eq(true)
     WebMock.reset!
   end
