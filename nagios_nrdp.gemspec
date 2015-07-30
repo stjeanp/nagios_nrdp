@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["stjeanp"]
-  s.date = "2015-07-29"
-  s.description = "A pure ruby implementation an NRDP client for submitting passive checks and commands to Nagios through NRDP."
+  s.date = "2015-07-30"
+  s.description = "A pure ruby implementation of an NRDP client for submitting passive checks and commands to Nagios through NRDP."
   s.email = "stjeanp@pat-st-jean.com"
   s.extra_rdoc_files = [
     "README.md"
