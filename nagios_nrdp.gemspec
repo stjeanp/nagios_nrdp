@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
     "spec/spec.opts",
     "spec/spec_helper.rb"
   ]
-  s.homepage = "http://github.com/stjeanp/nrdp"
+  s.homepage = "http://github.com/stjeanp/nagios_nrdp"
   s.licenses = ["MIT"]
   s.required_ruby_version = Gem::Requirement.new(">= 1.9.3")
   s.rubygems_version = "2.4.8"
